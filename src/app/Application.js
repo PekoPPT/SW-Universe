@@ -1,5 +1,6 @@
 import config from '../config';
 import EventEmitter from 'eventemitter3';
+import StarWarsUniverse from './custom/SWUniverse';
 
 const EVENTS = {
   APP_READY: 'app_ready',
@@ -29,9 +30,15 @@ export default class Application extends EventEmitter {
    * and manipulate the DOM tree. Task data should be assigned to Application.data.
    * The APP_READY event should be emitted at the end of this method.
    */
+
+
+
   async init() {
     // Initiate classes and wait for async operations here.
+    const StarWarsUniverse = new StarWarsUniverse();
 
+    StarWarsUniverse.init();
+    this.data.universe = StarWarsUniverse.getEntities();
     this.emit(Application.events.APP_READY);
   }
 }
