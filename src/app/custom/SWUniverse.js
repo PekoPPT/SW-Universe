@@ -36,5 +36,6 @@ export default class StarWarsUniverse {
             let currentEntity = new Entity(key, allEntityData);
             this.entities.push(currentEntity);
         })
+        return this.entities;
     }
 }
