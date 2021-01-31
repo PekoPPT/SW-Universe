@@ -1,13 +1,9 @@
 import Entity from './Entity';
 
 export default class StarWarsUniverse {
-
     constructor() {
         this.entities = [];
-    }
-
-    getEntities() {
-        return this.entities;
+        this.init();
     }
 
     async init() {
@@ -35,6 +31,5 @@ export default class StarWarsUniverse {
             let currentEntity = new Entity(key, allEntityData);
             this.entities.push(currentEntity);
         })
-        return this.entities;
     }
 }
