@@ -41,7 +41,8 @@ export default class StarWarsUniverse {
                 });
                 pageCounter += 1;
             }
-            let currentEntity = new Entity(key, allEntityData);
+            let entityData = { count: allEntityData.length, results: allEntityData };
+            let currentEntity = new Entity(key, entityData);
             result.push(currentEntity);
         };
         return result;
