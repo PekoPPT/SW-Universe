@@ -3,33 +3,47 @@ import Entity from './Entity';
 export default class StarWarsUniverse {
     constructor() {
         this.entities = [];
-        this.init();
+        return (async () => {
+            await this.init();
+            return this;
+        })();
     }
 
     async init() {
-        console.log("Start");
+        let rootKeys;
         const apiUrl = "https://swapi.booost.bg/api/";
         const rootData = await fetch(apiUrl);
         const jsonRootData = await rootData.json();
-        const rootKeys = Object.keys(jsonRootData);
 
-        rootKeys.forEach(async (key) => {
-            let dataResponse = await fetch(apiUrl + key);
-            let currentData = await dataResponse.json();
+        rootKeys = Object.keys(jsonRootData);
+        await this.getAllData(rootKeys, apiUrl).then((data) => {
+            this.entities = data;
+        });
+    }
+
+    async getAllData(rootKeys, apiUrl) {
+        let result = [];
+        for (const key of rootKeys) {
             let allEntityData = [];
-            allEntityData.push(...currentData.results);
+            let dataResponse = await fetch(apiUrl + key);
+            let fetchedData;
+            let currentData = await dataResponse.json().then((data) => {
+                fetchedData = data;
+                allEntityData.push(...data.results);
+            });
 
             let pageCounter = 2;
-            while (currentData.count !== allEntityData.length) {
+            while (fetchedData.count !== allEntityData.length) {
                 dataResponse = await fetch(apiUrl + key + "/?page=" + pageCounter);
 
-                let currentPageData = await dataResponse.json();
-                allEntityData.push(...currentPageData.results);
+                await dataResponse.json().then((currentPageData) => {
+                    allEntityData.push(...currentPageData.results);
+                });
                 pageCounter += 1;
             }
-
             let currentEntity = new Entity(key, allEntityData);
-            this.entities.push(currentEntity);
-        })
+            result.push(currentEntity);
+        };
+        return result;
     }
 }
